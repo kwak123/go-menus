@@ -20,22 +20,39 @@ func (menu *menu) addItemToMenu(i item) {
 	menu.ItemList = append(menu.ItemList, i)
 }
 
-func main() {
-	menu := &menu{ItemList: []item{{Name: "Hello"}}}
-
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		// item := "Test"
-		// go menu.addItemToMenu(item)
-		// menu.itemList <- "Hello"
-		item := item{Name: "New Item"}
-		menu.addItemToMenu(item)
-		menuJSON, err := json.Marshal(menu)
-		if err != nil {
-			fmt.Fprintf(w, "Error: %s", err)
+// This closure is probably unnecessary once converting to db
+func makeRouteHandler(m *menu) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path[1:] {
+		case "":
+			handleGetMenu(w, r, m)
+		case "add":
+			handleAddItemToMenu(w, r, m)
 		}
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(menuJSON)
-	})
+	}
+}
+
+func handleGetMenu(w http.ResponseWriter, r *http.Request, m *menu) {
+	menuJSON, err := json.Marshal(m)
+	if err != nil {
+		fmt.Fprintf(w, "Error: %s", err)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(menuJSON)
+}
+
+// TODO: Expand to add an item
+func handleAddItemToMenu(w http.ResponseWriter, r *http.Request, m *menu) {
+	item := item{Name: "New Item"}
+	m.addItemToMenu(item)
+	handleGetMenu(w, r, m)
+}
+
+func main() {
+	menu := new(menu)
+	routeHandler := makeRouteHandler(menu)
+
+	http.HandleFunc("/", routeHandler)
 	// http.HandleFunc("/getMenu", handleAddItemToMenu)
 
 	log.Fatal(http.ListenAndServe(":3001", nil))
