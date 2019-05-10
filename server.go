@@ -5,10 +5,14 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net/http"
+	"strconv"
 )
 
+// Types
 type item struct {
+	ID   string `json:"id"`
 	Name string `json:"name"`
 	// provider string
 }
@@ -67,8 +71,10 @@ func handleGetMenu(w http.ResponseWriter, r *http.Request, m *menu) {
 
 // TODO: Expand to add an item
 func handleAddItemToMenu(w http.ResponseWriter, r *http.Request, m *menu) {
+	// TODO: Remove this mock id handler
+	id := strconv.Itoa(rand.Int())
 	// Initialize item
-	item := item{}
+	item := item{ID: id}
 
 	// Try to read the body
 	itemJSON, err := ioutil.ReadAll(r.Body)
