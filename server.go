@@ -7,32 +7,34 @@ import (
 	"net/http"
 )
 
-// type item struct {
-// 	name     string
-// 	provider string
-// }
-
-type menu struct {
-	ItemList []string `json: itemList`
+type item struct {
+	Name string `json:"name"`
+	// provider string
 }
 
-// func (menu *menu) addItemToMenu(item string) {
-// 	menu.itemList <- item
-// }
+type menu struct {
+	ItemList []item `json:"itemList"`
+}
+
+func (menu *menu) addItemToMenu(i item) {
+	menu.ItemList = append(menu.ItemList, i)
+}
 
 func main() {
-	menu := &menu{ItemList: []string{"Test"}}
+	menu := &menu{ItemList: []item{{Name: "Hello"}}}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		// item := "Test"
 		// go menu.addItemToMenu(item)
 		// menu.itemList <- "Hello"
-		menuJson, err := json.Marshal(menu)
+		item := item{Name: "New Item"}
+		menu.addItemToMenu(item)
+		menuJSON, err := json.Marshal(menu)
 		if err != nil {
 			fmt.Fprintf(w, "Error: %s", err)
 		}
 		w.Header().Set("Content-Type", "application/json")
-		w.Write(menuJson)
+		w.Write(menuJSON)
 	})
 	// http.HandleFunc("/getMenu", handleAddItemToMenu)
 
