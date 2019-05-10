@@ -1,0 +1,39 @@
+{
+  "name": "go-menus",
+  "version": "1.0.0",
+  "description": "simple react client for go app",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "npm run react-dev",
+    "react-dev": "parcel watch index.html --out-dir ../dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kwak123/kwak-react.git"
+  },
+  "author": "Samuel kwak",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kwak123/kwak-react/issues"
+  },
+  "homepage": "https://github.com/kwak123/kwak-react#readme",
+  "devDependencies": {
+    "@babel/core": "^7.1.0",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-core": "^7.0.0-0",
+    "babel-jest": "^23.6.0",
+    "jest": "^23.6.0",
+    "parcel-bundler": "^1.10.0",
+    "react-test-renderer": "^16.2.0"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2"
+  }
+}
