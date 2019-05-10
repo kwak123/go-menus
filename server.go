@@ -14,6 +14,7 @@ type item struct {
 }
 
 type menu struct {
+	Name     string `json:"name"`
 	ItemList []item `json:"itemList"`
 }
 
@@ -27,11 +28,17 @@ func makeRouteHandler(m *menu) http.HandlerFunc {
 		apiPrefix := "/api/"
 		pathWithoutAPIPrefix := r.URL.Path[len(apiPrefix):]
 
-		switch pathWithoutAPIPrefix {
-		case "":
+		if r.Method == "GET" {
 			handleGetMenu(w, r, m)
-		case "add":
-			handleAddItemToMenu(w, r, m)
+		} else if r.Method == "POST" {
+			switch pathWithoutAPIPrefix {
+			case "add":
+				handleAddItemToMenu(w, r, m)
+			default:
+				w.WriteHeader(400)
+			}
+		} else {
+			fmt.Fprint(w, "Fai")
 		}
 	}
 }
@@ -78,7 +85,7 @@ func handleAddItemToMenu(w http.ResponseWriter, r *http.Request, m *menu) {
 }
 
 func main() {
-	menu := new(menu)
+	menu := &menu{Name: "Test"}
 	routeHandler := makeRouteHandler(menu)
 
 	fs := http.FileServer(http.Dir("dist"))
