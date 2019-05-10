@@ -23,8 +23,17 @@ type menu struct {
 	ItemList []item `json:"itemList"`
 }
 
-func (menu *menu) addItemToMenu(i item) {
+func (menu *menu) addItem(i item) {
 	menu.ItemList = append(menu.ItemList, i)
+}
+
+// Just names for learning haha
+func (menu *menu) updateItem(itemID string, newName string) {
+	for i := 0; i < len(menu.ItemList); i++ {
+		if menu.ItemList[i].ID == itemID {
+			menu.ItemList[i].Name = newName
+		}
+	}
 }
 
 // This closure is probably unnecessary once converting to db
@@ -44,6 +53,8 @@ func makeRouteHandler() http.HandlerFunc {
 			default:
 				w.WriteHeader(400)
 			}
+		} else if r.Method == "PUT" {
+			handleUpdateItem(w, r, m)
 		} else {
 			fmt.Fprint(w, "Fai")
 		}
@@ -89,7 +100,26 @@ func handleAddItemToMenu(w http.ResponseWriter, r *http.Request, m *menu) {
 		fmt.Fprintf(w, "Error converting JSON to item: %s", err)
 	}
 
-	m.addItemToMenu(item)
+	m.addItem(item)
+	handleGetMenu(w, r, m)
+}
+
+// Only name, one thing at a time for now haha
+func handleUpdateItem(w http.ResponseWriter, r *http.Request, m *menu) {
+	updateItem := item{}
+	updateJSON, err := ioutil.ReadAll(r.Body)
+
+	if err != nil {
+		fmt.Fprintf(w, "Error parsing body: %s", err)
+	}
+
+	err = json.Unmarshal(updateJSON, &updateItem)
+
+	if err != nil {
+		fmt.Fprintf(w, "Error converting JSON to item: %s", err)
+	}
+
+	m.updateItem(updateItem.ID, updateItem.Name)
 	handleGetMenu(w, r, m)
 }
 
