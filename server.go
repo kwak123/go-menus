@@ -14,6 +14,7 @@ type item struct {
 }
 
 type menu struct {
+	ID       string `json:"id"`
 	Name     string `json:"name"`
 	ItemList []item `json:"itemList"`
 }
@@ -23,7 +24,9 @@ func (menu *menu) addItemToMenu(i item) {
 }
 
 // This closure is probably unnecessary once converting to db
-func makeRouteHandler(m *menu) http.HandlerFunc {
+func makeRouteHandler() http.HandlerFunc {
+	m := &menu{ID: "123", Name: "Test"}
+
 	return func(w http.ResponseWriter, r *http.Request) {
 		apiPrefix := "/api/"
 		pathWithoutAPIPrefix := r.URL.Path[len(apiPrefix):]
@@ -85,8 +88,7 @@ func handleAddItemToMenu(w http.ResponseWriter, r *http.Request, m *menu) {
 }
 
 func main() {
-	menu := &menu{Name: "Test"}
-	routeHandler := makeRouteHandler(menu)
+	routeHandler := makeRouteHandler()
 
 	fs := http.FileServer(http.Dir("dist"))
 	http.HandleFunc("/api/", routeHandler)
