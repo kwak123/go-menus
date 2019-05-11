@@ -14,16 +14,14 @@ import (
 
 // This closure is probably unnecessary once converting to db
 func makeRouteHandler() http.HandlerFunc {
-	m := &db.Menu{ID: "123", Name: "Test"}
-
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "GET":
-			handleGetRequest(w, r, m)
+			handleGetRequest(w, r)
 		case "POST":
-			handlePostRequest(w, r, m)
+			handlePostRequest(w, r)
 		case "PUT":
-			handlePutRequest(w, r, m)
+			handlePutRequest(w, r)
 		default:
 			fmt.Fprint(w, "Invalid request")
 		}
@@ -31,30 +29,31 @@ func makeRouteHandler() http.HandlerFunc {
 }
 
 // Only one get for now
-func handleGetRequest(w http.ResponseWriter, r *http.Request, m *db.Menu) {
-	handleGetMenu(w, r, m)
+func handleGetRequest(w http.ResponseWriter, r *http.Request) {
+	handleGetMenu(w, r)
 }
 
 // Only have one post for now
-func handlePostRequest(w http.ResponseWriter, r *http.Request, m *db.Menu) {
+func handlePostRequest(w http.ResponseWriter, r *http.Request) {
 	apiPrefix := "/api/"
 	pathWithoutAPIPrefix := r.URL.Path[len(apiPrefix):]
 
 	switch pathWithoutAPIPrefix {
 	case "add":
-		handleAddItemToMenu(w, r, m)
+		handleAddItemToMenu(w, r)
 	case "delete":
-		handleDeleteItem(w, r, m)
+		handleDeleteItem(w, r)
 	default:
 		w.WriteHeader(400)
 	}
 }
 
-func handlePutRequest(w http.ResponseWriter, r *http.Request, m *db.Menu) {
-	handleUpdateItem(w, r, m)
+func handlePutRequest(w http.ResponseWriter, r *http.Request) {
+	handleUpdateItem(w, r)
 }
 
-func handleGetMenu(w http.ResponseWriter, r *http.Request, m *db.Menu) {
+func handleGetMenu(w http.ResponseWriter, r *http.Request) {
+	m := db.GetMenu("stub")
 	menuJSON, err := json.Marshal(m)
 	if err != nil {
 		fmt.Fprintf(w, "Error: %s", err)
@@ -80,7 +79,7 @@ func parseBodyForJSON(w http.ResponseWriter, r *http.Request, v interface{}) err
 }
 
 // TODO: Expand to add an item
-func handleAddItemToMenu(w http.ResponseWriter, r *http.Request, m *db.Menu) {
+func handleAddItemToMenu(w http.ResponseWriter, r *http.Request) {
 	// TODO: Remove this mock id handler
 	id := strconv.Itoa(rand.Int())
 	// Initialize item
@@ -92,12 +91,12 @@ func handleAddItemToMenu(w http.ResponseWriter, r *http.Request, m *db.Menu) {
 		fmt.Fprint(w, "Failed to parse")
 	}
 
-	m.AddItem(item)
-	handleGetMenu(w, r, m)
+	db.AddItemToMenu("stub", item)
+	handleGetMenu(w, r)
 }
 
 // Only name, one thing at a time for now haha
-func handleUpdateItem(w http.ResponseWriter, r *http.Request, m *db.Menu) {
+func handleUpdateItem(w http.ResponseWriter, r *http.Request) {
 	updateItem := db.Item{}
 
 	err := parseBodyForJSON(w, r, &updateItem)
@@ -106,11 +105,11 @@ func handleUpdateItem(w http.ResponseWriter, r *http.Request, m *db.Menu) {
 		fmt.Fprintf(w, "Failed to update item")
 	}
 
-	m.UpdateItem(updateItem.ID, updateItem.Name)
-	handleGetMenu(w, r, m)
+	db.UpdateItemInMenu("stub", updateItem)
+	handleGetMenu(w, r)
 }
 
-func handleDeleteItem(w http.ResponseWriter, r *http.Request, m *db.Menu) {
+func handleDeleteItem(w http.ResponseWriter, r *http.Request) {
 	deleteItem := db.Item{}
 
 	err := parseBodyForJSON(w, r, &deleteItem)
@@ -119,8 +118,8 @@ func handleDeleteItem(w http.ResponseWriter, r *http.Request, m *db.Menu) {
 		fmt.Fprintf(w, "Failed to delete item")
 	}
 
-	m.DeleteItem(deleteItem.ID)
-	handleGetMenu(w, r, m)
+	db.DeleteItemFromMenu("stub", deleteItem.ID)
+	handleGetMenu(w, r)
 }
 
 func main() {
@@ -129,8 +128,6 @@ func main() {
 	fs := http.FileServer(http.Dir("dist"))
 	http.HandleFunc("/api/", routeHandler)
 	http.Handle("/", fs)
-
-	// http.HandleFunc("/getMenu", handleAddItemToMenu)
 
 	log.Fatal(http.ListenAndServe(":3001", nil))
 }
