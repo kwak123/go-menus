@@ -9,7 +9,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var database *mongo.Database
+// Database references the initialized mongo database
+var Database *mongo.Database
 var hasInitialized = false
 
 // InitializeDb starts the MongoDB client
@@ -30,7 +31,7 @@ func InitializeDb() {
 
 		hasInitialized = true
 		println("Connected to db")
-		database = client.Database("test")
+		Database = client.Database("test")
 		refreshDb()
 		cancel()
 	} else {
@@ -39,13 +40,13 @@ func InitializeDb() {
 }
 
 func refreshDb() {
-	err := database.Collection("menu").Drop(context.TODO())
+	err := Database.Collection("menu").Drop(context.TODO())
 	if err != nil {
 		println("Failed to refresh db: %s", err)
 	} else {
 		println("DB refreshed")
 	}
-	database.Collection("menu")
+	Database.Collection("menu")
 }
 
 var menu = Menu{ID: "123", Name: "Test"}
