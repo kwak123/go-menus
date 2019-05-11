@@ -2,8 +2,9 @@ package db
 
 // Item of food
 type Item struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	Provider string `json:"provider"`
 	// provider string
 }
 
@@ -14,20 +15,22 @@ type Menu struct {
 	ItemList []Item `json:"itemList"`
 }
 
+// AddItem appends Item to ItemList
 func (menu *Menu) AddItem(i Item) {
 	menu.ItemList = append(menu.ItemList, i)
 }
 
-// Just names for learning haha
-func (menu *Menu) UpdateItem(itemID string, newName string) {
+// UpdateItem will find itemID in menu and replace it
+func (menu *Menu) UpdateItem(updatedItem Item) {
 	for i := 0; i < len(menu.ItemList); i++ {
-		if menu.ItemList[i].ID == itemID {
-			menu.ItemList[i].Name = newName
+		if menu.ItemList[i].ID == updatedItem.ID {
+			menu.ItemList[i] = updatedItem
+			return
 		}
 	}
 }
 
-// man this is inefficient
+// DeleteItem excises itemID from ItemList
 func (menu *Menu) DeleteItem(itemID string) {
 	indexToDelete := -1
 	for i := 0; i < len(menu.ItemList); i++ {
