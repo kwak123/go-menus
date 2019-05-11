@@ -16,8 +16,6 @@ var menuCollectionName = "menus"
 var Database *mongo.Database
 var hasInitialized = false
 
-var menu = Menu{ID: "stub", Name: "Test", ItemList: []Item{}}
-
 // InitializeDb starts the MongoDB client
 func InitializeDb() {
 	if !hasInitialized {
@@ -45,6 +43,7 @@ func InitializeDb() {
 }
 
 func refreshDb() {
+	menu := Menu{ID: "stub", Name: "Test", ItemList: []Item{}}
 	err := Database.Collection(menuCollectionName).Drop(context.TODO())
 	if err != nil {
 		println("Failed to refresh db: %s", err)
@@ -106,7 +105,22 @@ func DeleteItemFromMenu(menuID string, itemID string) {
 
 // UpdateItemInMenu replaces specified Item from specific menu
 // Item.ID will be kept the same
+// TODO: Do this with MongoDB in one operation
 func UpdateItemInMenu(menuID string, updatedItem Item) {
-	fmt.Printf("Need to implement using the id: %s", menuID)
+	menu := Menu{}
+	filter := bson.D{{"id", menuID}}
+	err := Database.Collection(menuCollectionName).FindOne(context.TODO(), filter).Decode(&menu)
+
+	if err != nil {
+		println("")
+		fmt.Printf("Failed to find menu for update: %s", err.Error())
+	}
+
 	menu.UpdateItem(updatedItem)
+	_, err = Database.Collection(menuCollectionName).ReplaceOne(context.TODO(), filter, menu)
+
+	if err != nil {
+		println("")
+		fmt.Printf("Failed to update item in menu: %s", err.Error())
+	}
 }
