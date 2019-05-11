@@ -36,6 +36,20 @@ func (menu *menu) updateItem(itemID string, newName string) {
 	}
 }
 
+// man this is inefficient
+func (menu *menu) deleteItem(itemID string) {
+	indexToDelete := -1
+	for i := 0; i < len(menu.ItemList); i++ {
+		if menu.ItemList[i].ID == itemID {
+			indexToDelete = i
+		}
+	}
+
+	if indexToDelete > -1 {
+		menu.ItemList = append(menu.ItemList[:indexToDelete], menu.ItemList[indexToDelete+1:]...)
+	}
+}
+
 // This closure is probably unnecessary once converting to db
 func makeRouteHandler() http.HandlerFunc {
 	m := &menu{ID: "123", Name: "Test"}
@@ -50,6 +64,8 @@ func makeRouteHandler() http.HandlerFunc {
 			switch pathWithoutAPIPrefix {
 			case "add":
 				handleAddItemToMenu(w, r, m)
+			case "delete":
+				handleDeleteItem(w, r, m)
 			default:
 				w.WriteHeader(400)
 			}
@@ -120,6 +136,24 @@ func handleUpdateItem(w http.ResponseWriter, r *http.Request, m *menu) {
 	}
 
 	m.updateItem(updateItem.ID, updateItem.Name)
+	handleGetMenu(w, r, m)
+}
+
+func handleDeleteItem(w http.ResponseWriter, r *http.Request, m *menu) {
+	itemToDelete := item{}
+	deleteJSON, err := ioutil.ReadAll(r.Body)
+
+	if err != nil {
+		fmt.Fprintf(w, "Error parsing body: %s", err)
+	}
+
+	err = json.Unmarshal(deleteJSON, &itemToDelete)
+
+	if err != nil {
+		fmt.Fprintf(w, "Error converting JSON to item: %s", err)
+	}
+
+	m.deleteItem(itemToDelete.ID)
 	handleGetMenu(w, r, m)
 }
 
