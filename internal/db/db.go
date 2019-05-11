@@ -5,13 +5,18 @@ import (
 	"fmt"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+var menuCollectionName = "menus"
+
 // Database references the initialized mongo database
 var Database *mongo.Database
 var hasInitialized = false
+
+var menu = Menu{ID: "stub", Name: "Test", ItemList: []Item{}}
 
 // InitializeDb starts the MongoDB client
 func InitializeDb() {
@@ -40,20 +45,24 @@ func InitializeDb() {
 }
 
 func refreshDb() {
-	err := Database.Collection("menu").Drop(context.TODO())
+	err := Database.Collection(menuCollectionName).Drop(context.TODO())
 	if err != nil {
 		println("Failed to refresh db: %s", err)
 	} else {
 		println("DB refreshed")
 	}
-	Database.Collection("menu")
+	Database.Collection(menuCollectionName).InsertOne(context.TODO(), menu)
 }
-
-var menu = Menu{ID: "123", Name: "Test"}
 
 // GetMenu finds desired menu by menuID
 func GetMenu(menuID string) Menu {
-	fmt.Printf("Need to implement using the id: %s", menuID)
+	menu := Menu{}
+	filter := bson.D{{"id", menuID}}
+	err := Database.Collection(menuCollectionName).FindOne(context.TODO(), filter).Decode(&menu)
+
+	if err != nil {
+		println("Failed to find menu")
+	}
 	return menu
 }
 
