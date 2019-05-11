@@ -68,8 +68,21 @@ func GetMenu(menuID string) Menu {
 
 // AddItemToMenu adds Item to specified Menu.ItemList
 func AddItemToMenu(menuID string, newItem Item) {
-	fmt.Printf("Need to implement using the id: %s", menuID)
-	menu.AddItem(newItem)
+	// menu := Menu{}
+	filter := bson.D{{"id", menuID}}
+
+	updateOperation := bson.D{
+		{"$push", bson.D{
+			{"itemlist", newItem},
+		}},
+	}
+
+	_, err := Database.Collection(menuCollectionName).UpdateOne(context.TODO(), filter, updateOperation)
+
+	if err != nil {
+		println("")
+		fmt.Printf("Failed to add item to menu: %s", err.Error())
+	}
 }
 
 // DeleteItemFromMenu deletes specified ItemID from specified Menu
