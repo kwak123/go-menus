@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"./internal/db"
+	"go-menus/internal/db"
 )
 
 // This closure is probably unnecessary once converting to db
