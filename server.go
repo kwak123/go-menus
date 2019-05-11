@@ -8,51 +8,13 @@ import (
 	"math/rand"
 	"net/http"
 	"strconv"
+
+	"./internal/db"
 )
-
-// Types
-type item struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-	// provider string
-}
-
-type menu struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	ItemList []item `json:"itemList"`
-}
-
-func (menu *menu) addItem(i item) {
-	menu.ItemList = append(menu.ItemList, i)
-}
-
-// Just names for learning haha
-func (menu *menu) updateItem(itemID string, newName string) {
-	for i := 0; i < len(menu.ItemList); i++ {
-		if menu.ItemList[i].ID == itemID {
-			menu.ItemList[i].Name = newName
-		}
-	}
-}
-
-// man this is inefficient
-func (menu *menu) deleteItem(itemID string) {
-	indexToDelete := -1
-	for i := 0; i < len(menu.ItemList); i++ {
-		if menu.ItemList[i].ID == itemID {
-			indexToDelete = i
-		}
-	}
-
-	if indexToDelete > -1 {
-		menu.ItemList = append(menu.ItemList[:indexToDelete], menu.ItemList[indexToDelete+1:]...)
-	}
-}
 
 // This closure is probably unnecessary once converting to db
 func makeRouteHandler() http.HandlerFunc {
-	m := &menu{ID: "123", Name: "Test"}
+	m := &db.Menu{ID: "123", Name: "Test"}
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		apiPrefix := "/api/"
@@ -78,16 +40,16 @@ func makeRouteHandler() http.HandlerFunc {
 }
 
 // Only one get for now
-func handleGetRequest(w http.ResponseWriter, r *http.Request, m *menu) {
+func handleGetRequest(w http.ResponseWriter, r *http.Request, m *db.Menu) {
 	handleGetMenu(w, r, m)
 }
 
 // Only have one post for now
-func handlePostRequest(w http.ResponseWriter, r *http.Request, m *menu) {
+func handlePostRequest(w http.ResponseWriter, r *http.Request, m *db.Menu) {
 	handleAddItemToMenu(w, r, m)
 }
 
-func handleGetMenu(w http.ResponseWriter, r *http.Request, m *menu) {
+func handleGetMenu(w http.ResponseWriter, r *http.Request, m *db.Menu) {
 	menuJSON, err := json.Marshal(m)
 	if err != nil {
 		fmt.Fprintf(w, "Error: %s", err)
@@ -97,11 +59,11 @@ func handleGetMenu(w http.ResponseWriter, r *http.Request, m *menu) {
 }
 
 // TODO: Expand to add an item
-func handleAddItemToMenu(w http.ResponseWriter, r *http.Request, m *menu) {
+func handleAddItemToMenu(w http.ResponseWriter, r *http.Request, m *db.Menu) {
 	// TODO: Remove this mock id handler
 	id := strconv.Itoa(rand.Int())
 	// Initialize item
-	item := item{ID: id}
+	item := db.Item{ID: id}
 
 	// Try to read the body
 	itemJSON, err := ioutil.ReadAll(r.Body)
@@ -116,13 +78,13 @@ func handleAddItemToMenu(w http.ResponseWriter, r *http.Request, m *menu) {
 		fmt.Fprintf(w, "Error converting JSON to item: %s", err)
 	}
 
-	m.addItem(item)
+	m.AddItem(item)
 	handleGetMenu(w, r, m)
 }
 
 // Only name, one thing at a time for now haha
-func handleUpdateItem(w http.ResponseWriter, r *http.Request, m *menu) {
-	updateItem := item{}
+func handleUpdateItem(w http.ResponseWriter, r *http.Request, m *db.Menu) {
+	updateItem := db.Item{}
 	updateJSON, err := ioutil.ReadAll(r.Body)
 
 	if err != nil {
@@ -135,12 +97,12 @@ func handleUpdateItem(w http.ResponseWriter, r *http.Request, m *menu) {
 		fmt.Fprintf(w, "Error converting JSON to item: %s", err)
 	}
 
-	m.updateItem(updateItem.ID, updateItem.Name)
+	m.UpdateItem(updateItem.ID, updateItem.Name)
 	handleGetMenu(w, r, m)
 }
 
-func handleDeleteItem(w http.ResponseWriter, r *http.Request, m *menu) {
-	itemToDelete := item{}
+func handleDeleteItem(w http.ResponseWriter, r *http.Request, m *db.Menu) {
+	itemToDelete := db.Item{}
 	deleteJSON, err := ioutil.ReadAll(r.Body)
 
 	if err != nil {
@@ -153,7 +115,7 @@ func handleDeleteItem(w http.ResponseWriter, r *http.Request, m *menu) {
 		fmt.Fprintf(w, "Error converting JSON to item: %s", err)
 	}
 
-	m.deleteItem(itemToDelete.ID)
+	m.DeleteItem(itemToDelete.ID)
 	handleGetMenu(w, r, m)
 }
 
