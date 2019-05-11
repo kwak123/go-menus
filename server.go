@@ -123,6 +123,7 @@ func handleDeleteItem(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	db.InitializeDb()
 	routeHandler := makeRouteHandler()
 
 	fs := http.FileServer(http.Dir("dist"))
