@@ -4,7 +4,7 @@ const api = axios.create();
 
 api.interceptors.response.use(res => res.data);
 
-const getAllMenus = () => api.get('/api')
+const getAllMenus = () => api.get('/api/')
 
 const getMenu = menuId => api.get(`/api/${menuId}`);
 

@@ -10,6 +10,8 @@ import (
 	"strconv"
 
 	"go-menus/internal/db"
+
+	"github.com/gorilla/mux"
 )
 
 // This closure is probably unnecessary once converting to db
@@ -139,13 +141,22 @@ func handleDeleteItem(w http.ResponseWriter, r *http.Request) {
 	handleGetMenu(w, r, "stub")
 }
 
+func clientRouterHandler(w http.ResponseWriter, r *http.Request) {
+	entryPoint := "dist/index.html"
+	http.ServeFile(w, r, entryPoint)
+}
+
 func main() {
 	db.InitializeDb()
 	routeHandler := makeRouteHandler()
 
-	fs := http.FileServer(http.Dir("dist"))
-	http.HandleFunc("/api/", routeHandler)
-	http.Handle("/", fs)
+	routeMux := mux.NewRouter()
+	routeMux.PathPrefix("/api/").HandlerFunc(routeHandler)
 
-	log.Fatal(http.ListenAndServe(":3001", nil))
+	fs := http.FileServer(http.Dir("dist"))
+	// Catch-all for react routing
+	routeMux.PathPrefix("/app/").HandlerFunc(clientRouterHandler)
+	routeMux.PathPrefix("/").Handler(fs)
+
+	log.Fatal(http.ListenAndServe(":3001", routeMux))
 }

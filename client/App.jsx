@@ -1,15 +1,17 @@
 import React from 'react';
-import ReactDom from 'react-dom';
+
+import { Router, Link } from '@reach/router';
+
 import Main from './components/Main.jsx';
+import Menu from './components/menu/Menu';
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
-      <Main />
+      <Router>
+        <Main path="/" />
+        <Menu path="/app/:menuId" />
+      </Router>
     );
   }
 }
