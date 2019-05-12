@@ -30,7 +30,13 @@ func makeRouteHandler() http.HandlerFunc {
 
 // Only one get for now
 func handleGetRequest(w http.ResponseWriter, r *http.Request) {
-	handleGetMenu(w, r)
+	apiPrefix := "/api/"
+	menuID := r.URL.Path[len(apiPrefix):]
+	if menuID == "" {
+		handleGetAllMenus(w, r)
+	} else {
+		handleGetMenu(w, r, menuID)
+	}
 }
 
 // Only have one post for now
@@ -52,9 +58,20 @@ func handlePutRequest(w http.ResponseWriter, r *http.Request) {
 	handleUpdateItem(w, r)
 }
 
-func handleGetMenu(w http.ResponseWriter, r *http.Request) {
-	m := db.GetMenu("stub")
+func handleGetMenu(w http.ResponseWriter, r *http.Request, menuID string) {
+	m := db.GetMenu(menuID)
 	menuJSON, err := json.Marshal(m)
+	if err != nil {
+		fmt.Fprintf(w, "Error: %s", err)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(menuJSON)
+}
+
+func handleGetAllMenus(w http.ResponseWriter, r *http.Request) {
+	menus := db.GetAllMenus()
+	menuJSON, err := json.Marshal(menus)
+
 	if err != nil {
 		fmt.Fprintf(w, "Error: %s", err)
 	}
@@ -92,7 +109,7 @@ func handleAddItemToMenu(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db.AddItemToMenu("stub", item)
-	handleGetMenu(w, r)
+	handleGetMenu(w, r, "stub")
 }
 
 // Only name, one thing at a time for now haha
@@ -106,7 +123,7 @@ func handleUpdateItem(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db.UpdateItemInMenu("stub", updateItem)
-	handleGetMenu(w, r)
+	handleGetMenu(w, r, "stub")
 }
 
 func handleDeleteItem(w http.ResponseWriter, r *http.Request) {
@@ -119,7 +136,7 @@ func handleDeleteItem(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db.DeleteItemFromMenu("stub", deleteItem.ID)
-	handleGetMenu(w, r)
+	handleGetMenu(w, r, "stub")
 }
 
 func main() {

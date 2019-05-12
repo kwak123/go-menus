@@ -53,6 +53,31 @@ func refreshDb() {
 	Database.Collection(menuCollectionName).InsertOne(context.TODO(), menu)
 }
 
+// Fetches all available menus
+func GetAllMenus() []*Menu {
+	findOptions := options.Find()
+	var menuList []*Menu
+
+	cursor, err := Database.Collection(menuCollectionName).Find(context.TODO(), bson.D{}, findOptions)
+
+	if err != nil {
+		println("Failed to get menus")
+	}
+
+	for cursor.Next(context.TODO()) {
+		var m Menu
+		err := cursor.Decode(&m)
+
+		if err != nil {
+			println("Failed to decode cursor")
+		}
+		menuList = append(menuList, &m)
+	}
+
+	cursor.Close(context.TODO())
+	return menuList
+}
+
 // GetMenu finds desired menu by menuID
 func GetMenu(menuID string) Menu {
 	menu := Menu{}
