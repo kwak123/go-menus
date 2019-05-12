@@ -1,22 +1,30 @@
 import React from 'react';
-import T from 'prop-types';
+import axios from 'axios';
+
+import api from '../api/api'
 
 class Main extends React.Component {
-  constructor(props) {
-    super(props);
+  state = {
+    name: 'Loading',
+    menuList: [],
+  }
+
+  componentDidMount() {
+    api.getAllMenus()
+      .then(menuList => {
+        console.log(menuList)
+        this.setState({ menuList })
+      });
   }
 
   render() {
     return (
-      <div>
-        <h1> Welcome! </h1>
+      <div className="main-page">
+        <h1 className="main-page__header">Menus!</h1>
+        {this.state.menuList.map(menu => <li><a href={`/app/${menu.id}`}>{menu.name}</a></li>)}
       </div>
     );
   }
 }
-
-Main.propTypes = {
-  // Fill in your types here
-};
 
 export default Main;

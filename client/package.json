@@ -19,21 +19,23 @@
   },
   "homepage": "https://github.com/kwak123/kwak-react#readme",
   "devDependencies": {
-    "@babel/core": "^7.1.0",
-    "@babel/plugin-proposal-class-properties": "^7.1.0",
-    "@babel/preset-env": "^7.1.0",
+    "@babel/core": "^7.4.4",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
     "@babel/preset-react": "^7.0.0",
     "babel-core": "^7.0.0-0",
-    "babel-jest": "^23.6.0",
-    "jest": "^23.6.0",
-    "parcel-bundler": "^1.10.0",
-    "react-test-renderer": "^16.2.0"
+    "babel-jest": "^24.8.0",
+    "jest": "^24.8.0",
+    "parcel-bundler": "^1.12.3",
+    "react-test-renderer": "^16.8.6"
   },
   "dependencies": {
+    "@material-ui/core": "^3.9.3",
+    "@reach/router": "^1.2.1",
     "axios": "^0.18.0",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "react-router": "^4.2.0",
-    "react-router-dom": "^4.2.2"
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-router": "^5.0.0",
+    "react-router-dom": "^5.0.0"
   }
 }
