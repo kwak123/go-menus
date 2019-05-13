@@ -1,6 +1,16 @@
 body {
 	margin: 0;
 	font-family: 'Robot', sans-serif;
+	width: 100vw;
+	height: calc(100vh - 64px);
+}
+
+#app {
+	height: 100%;
+}
+
+.app__container {
+	height: 100%;
 }
 
 .header__title {
@@ -14,15 +24,19 @@ body {
 }
 
 .main-page {
+	height: 100%;
 	margin-top: 64px;
 }
 
 .main-page__container {
+	height: 100%;
 	display: flex;
 }
 
 .menu-list {
-	width: 192px;
+	height: 100%;
+	min-width: 192px;
+	border-right: 1px solid grey;
 }
 
 .menu-list__header {
@@ -30,6 +44,7 @@ body {
 }
 
 .main-page__detail {
-	align-items: center;
-	justify-content: center;
+	display: flex;
+	padding: 16px;
+	width: 100%;
 }
