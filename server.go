@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"math/rand"
 	"net/http"
-	"strconv"
 
 	"go-menus/internal/db"
 
 	"github.com/gorilla/mux"
+
+	"github.com/google/uuid"
 )
 
 // This closure is probably unnecessary once converting to db
@@ -99,10 +99,11 @@ func parseBodyForJSON(w http.ResponseWriter, r *http.Request, v interface{}) err
 
 // TODO: Expand to add an item
 func handleAddItemToMenu(w http.ResponseWriter, r *http.Request) {
+	newID := uuid.New()
 	// TODO: Remove this mock id handler
-	id := strconv.Itoa(rand.Int())
+	stringifiedID := newID.String()
 	// Initialize item
-	item := db.Item{ID: id}
+	item := db.Item{ID: stringifiedID}
 
 	err := parseBodyForJSON(w, r, &item)
 

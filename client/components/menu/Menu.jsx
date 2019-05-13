@@ -22,7 +22,7 @@ class Menu extends React.Component {
   render() {
     return (
       <div>
-        <h2>{name || "Menu"}</h2>
+        <h2>{this.state.name || "Menu"}</h2>
         <ul>
           {this.state.itemList.map(item => <Item item={item} key={item.id}></Item>)}
         </ul>

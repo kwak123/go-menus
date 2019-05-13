@@ -1,0 +1,35 @@
+body {
+	margin: 0;
+	font-family: 'Robot', sans-serif;
+}
+
+.header__title {
+	text-decoration: none;
+	color: white;
+	transition: color 0.3s;
+}
+
+.header__title:hover {
+	color: grey;
+}
+
+.main-page {
+	margin-top: 64px;
+}
+
+.main-page__container {
+	display: flex;
+}
+
+.menu-list {
+	width: 192px;
+}
+
+.menu-list__header {
+	margin: 24px 0 24px 16px;
+}
+
+.main-page__detail {
+	align-items: center;
+	justify-content: center;
+}
