@@ -18,13 +18,25 @@ class Main extends React.Component {
   state = {
     menuList: [],
     currentMenuId: '',
-    updateMenuItem: this.updateMenuItem,
+    updateMenuItem: item => this.updateMenuItem(item),
   }
 
   updateMenuItem = (item) => {
     const { currentMenuId } = this.state;
     return api.updateMenuItem(currentMenuId, item)
-      .then(newMenuList => this.setState({ menuList: newMenuList }));
+      .then(updatedMenu => {
+        // Ghettoooooo
+        const newMenuList = this.state.menuList.map((menu) => {
+          if (menu.id === updatedMenu.id) {
+            console.log('found');
+            return updatedMenu;
+          }
+          return { ...menu };
+        });
+        console.log(item)
+        console.log(JSON.parse(JSON.stringify(newMenuList)));
+        this.setState({ menuList: newMenuList })
+      });
   }
 
   componentDidMount() {
