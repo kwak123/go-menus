@@ -1,5 +1,7 @@
 import React from 'react';
 
+import api from '../../api/api';
+
 const Item = (props) => {
   const { item } = props;
   const { name, provider } = item;

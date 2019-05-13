@@ -1,6 +1,8 @@
 import React from 'react';
 import { Router, Link } from '@reach/router';
 
+import MenuContext from '../contexts/menu';
+
 import HomePage from './common/HomePage';
 import Menu from './menu/Menu';
 
@@ -14,9 +16,15 @@ import api from '../api/api'
 
 class Main extends React.Component {
   state = {
-    name: 'Loading',
     menuList: [],
     currentMenuId: '',
+    updateMenuItem: this.updateMenuItem,
+  }
+
+  updateMenuItem = (item) => {
+    const { currentMenuId } = this.state;
+    return api.updateMenuItem(currentMenuId, item)
+      .then(newMenuList => this.setState({ menuList: newMenuList }));
   }
 
   componentDidMount() {
@@ -33,32 +41,34 @@ class Main extends React.Component {
 
   render() {
     return (
-      <div className="main-page">
-        <div className="main-page__container">
-          <div className="menu-list">
-            <h2 className="menu-list__header">Menus</h2>
-            <List component="nav">
-              {this.state.menuList.map(menu => (
-                <ListItem
-                  button
-                  component="a"
-                  href={`/app/${menu.id}`}
-                  key={menu.id}
-                  selected={this.state.currentMenuId === menu.id}
-                >
-                  <ListItemText>{menu.name}</ListItemText>
-                </ListItem>)
-              )}
-            </List>
-          </div>
-          <div className="main-page__detail">
-            <Router>
-              <HomePage path="/" />
-              <Menu path="/app/:menuId" />
-            </Router>
+      <MenuContext.Provider value={this.state}>
+        <div className="main-page">
+          <div className="main-page__container">
+            <div className="menu-list">
+              <h2 className="menu-list__header">Menus</h2>
+              <List component="nav">
+                {this.state.menuList.map(menu => (
+                  <ListItem
+                    button
+                    component="a"
+                    href={`/app/${menu.id}`}
+                    key={menu.id}
+                    selected={this.state.currentMenuId === menu.id}
+                  >
+                    <ListItemText>{menu.name}</ListItemText>
+                  </ListItem>)
+                )}
+              </List>
+            </div>
+            <div className="main-page__detail">
+              <Router>
+                <HomePage path="/" />
+                <Menu path="/app/:menuId" />
+              </Router>
+            </div>
           </div>
         </div>
-      </div>
+      </MenuContext.Provider>
     );
   }
 }
