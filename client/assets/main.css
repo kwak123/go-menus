@@ -1,0 +1,50 @@
+body {
+	margin: 0;
+	font-family: 'Robot', sans-serif;
+	width: 100vw;
+	height: calc(100vh - 64px);
+}
+
+#app {
+	height: 100%;
+}
+
+.app__container {
+	height: 100%;
+}
+
+.header__title {
+	text-decoration: none;
+	color: white;
+	transition: color 0.3s;
+}
+
+.header__title:hover {
+	color: grey;
+}
+
+.main-page {
+	height: 100%;
+	margin-top: 64px;
+}
+
+.main-page__container {
+	height: 100%;
+	display: flex;
+}
+
+.menu-list {
+	height: 100%;
+	min-width: 192px;
+	border-right: 1px solid grey;
+}
+
+.menu-list__header {
+	margin: 24px 0 24px 16px;
+}
+
+.main-page__detail {
+	display: flex;
+	padding: 16px;
+	width: 100%;
+}
