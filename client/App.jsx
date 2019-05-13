@@ -9,7 +9,7 @@ import { AppBar, Toolbar, Typography } from '@material-ui/core';
 class App extends React.Component {
   render() {
     return (
-      <div class="app__container">
+      <div className="app__container">
         <AppBar>
           <Toolbar>
             <Typography variant="h6" color="inherit">

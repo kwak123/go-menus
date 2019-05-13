@@ -16,11 +16,19 @@ class Main extends React.Component {
   state = {
     name: 'Loading',
     menuList: [],
+    currentMenuId: '',
   }
 
   componentDidMount() {
+    this.setCurrentMenuId();
     api.getAllMenus()
       .then(menuList => this.setState({ menuList }));
+  }
+
+  setCurrentMenuId = () => {
+    const urlArray = window.location.href.split('/');
+    const menuId = urlArray.pop();
+    this.setState({ currentMenuId: menuId });
   }
 
   render() {
@@ -35,6 +43,8 @@ class Main extends React.Component {
                   button
                   component="a"
                   href={`/app/${menu.id}`}
+                  key={menu.id}
+                  selected={this.state.currentMenuId === menu.id}
                 >
                   <ListItemText>{menu.name}</ListItemText>
                 </ListItem>)
