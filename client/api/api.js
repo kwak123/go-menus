@@ -10,8 +10,11 @@ const getMenu = menuId => api.get(`/api/${menuId}`);
 
 const updateMenuItem = (menuId, item) => api.put(`/api/${menuId}`, item);
 
+const addMenuItem = () => api.post('/api/add', {});
+
 export default {
   getAllMenus,
   getMenu,
   updateMenuItem,
+  addMenuItem,
 };

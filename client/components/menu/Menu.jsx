@@ -1,12 +1,15 @@
 import React from 'react';
 
-import api from '../../api/api';
+import { Button } from '@material-ui/core';
 
 import Item from './Item';
 
+import api from '../../api/api';
+import MenuContext from '../../contexts/menu';
+
 class Menu extends React.Component {
   state = {
-    name: '',
+    name: 'Loading',
     itemList: [],
   }
 
@@ -21,12 +24,17 @@ class Menu extends React.Component {
 
   render() {
     return (
-      <div>
-        <h2>{this.state.name || "Menu"}</h2>
-        <ul>
-          {this.state.itemList.map(item => <Item item={item} key={item.id}></Item>)}
-        </ul>
-      </div>
+        <div className="menu__container">
+          <h2>{this.state.name}</h2>
+          <ul>
+            {this.state.itemList.map(item => <Item item={item} key={item.id}></Item>)}
+          </ul>
+          <MenuContext.Consumer>
+            {({ addMenuItem }) => (
+              <Button variant="contained" onClick={addMenuItem}>Add Item</Button>
+            )}
+          </MenuContext.Consumer>
+        </div>
     );
   }
 };

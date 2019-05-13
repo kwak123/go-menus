@@ -19,22 +19,20 @@ class Main extends React.Component {
     menuList: [],
     currentMenuId: '',
     updateMenuItem: item => this.updateMenuItem(item),
+    addMenuItem: () => this.addMenuItem(),
   }
 
   updateMenuItem = (item) => {
     const { currentMenuId } = this.state;
     return api.updateMenuItem(currentMenuId, item)
-      .then(updatedMenu => {
+      .then((updatedMenu) => {
         // Ghettoooooo
         const newMenuList = this.state.menuList.map((menu) => {
           if (menu.id === updatedMenu.id) {
-            console.log('found');
             return updatedMenu;
           }
           return { ...menu };
         });
-        console.log(item)
-        console.log(JSON.parse(JSON.stringify(newMenuList)));
         this.setState({ menuList: newMenuList })
       });
   }
@@ -49,6 +47,20 @@ class Main extends React.Component {
     const urlArray = window.location.href.split('/');
     const menuId = urlArray.pop();
     this.setState({ currentMenuId: menuId });
+  }
+
+  addMenuItem = () => {
+    return api.addMenuItem()
+      .then((updatedMenu) => {
+        // Ghettoooooo
+        const newMenuList = this.state.menuList.map((menu) => {
+          if (menu.id === updatedMenu.id) {
+            return updatedMenu;
+          }
+          return { ...menu };
+        });
+        this.setState({ menuList: newMenuList })
+      });
   }
 
   render() {

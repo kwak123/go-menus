@@ -4,6 +4,7 @@ const menuState = {
   menuList: [],
   currentMenuId: '',
   updateMenuItem: () => {},
+  addMenuItem: () => {},
 };
 
 const MenuContext = React.createContext(menuState);
