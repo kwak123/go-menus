@@ -22,6 +22,16 @@ class Menu extends React.Component {
       }));
   }
 
+  // TODO: This refetch can be solved
+  componentDidUpdate() {
+    const { menuId } = this.props;
+    api.getMenu(menuId)
+      .then(menu => this.setState({
+        name: menu.name,
+        itemList: menu.itemList,
+      }));
+  }
+
   render() {
     return (
         <div className="menu__container">
