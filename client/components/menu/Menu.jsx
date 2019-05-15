@@ -7,46 +7,19 @@ import Item from './Item';
 import api from '../../api/api';
 import MenuContext from '../../contexts/menu';
 
-class Menu extends React.Component {
-  state = {
-    name: 'Loading',
-    itemList: [],
-  }
+const Menu = (props) => {
+  const { currentMenu, addMenuItem } = props;
+  const { name, itemList } = currentMenu;
 
-  componentDidMount() {
-    const { menuId } = this.props;
-    api.getMenu(menuId)
-      .then(menu => this.setState({
-        name: menu.name,
-        itemList: menu.itemList,
-      }));
-  }
-
-  // TODO: This refetch can be solved UH OH THIS WONT STOP
-  // componentDidUpdate() {
-  //   const { menuId } = this.props;
-  //   api.getMenu(menuId)
-  //     .then(menu => this.setState({
-  //       name: menu.name,
-  //       itemList: menu.itemList,
-  //     }));
-  // }
-
-  render() {
-    return (
-      <div className="menu__container">
-        <h2>{this.state.name}</h2>
-        <ul>
-          {this.state.itemList.map(item => <Item item={item} key={item.id}></Item>)}
-        </ul>
-        <MenuContext.Consumer>
-          {({ addMenuItem }) => (
-            <Button variant="contained" onClick={addMenuItem}>Add Item</Button>
-          )}
-        </MenuContext.Consumer>
-      </div>
-    );
-  }
+  return (
+    <div className="menu__container">
+      <h2>{name}</h2>
+      <ul>
+        {itemList.map(item => <Item item={item} key={item.id}></Item>)}
+      </ul>
+      <Button variant="contained" onClick={addMenuItem}>Add Item</Button>
+    </div>
+  );
 };
 
 export default Menu;

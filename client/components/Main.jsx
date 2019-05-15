@@ -4,7 +4,8 @@ import { Router, Link } from '@reach/router';
 import MenuContext from '../contexts/menu';
 
 import HomePage from './common/HomePage';
-import Menu from './menu/Menu';
+// import Menu from './menu/Menu';
+import MenuContainer from './menu/MenuContainer';
 
 import {
   List,
@@ -18,6 +19,11 @@ class Main extends React.Component {
   state = {
     menuList: [],
     currentMenuId: '',
+    currentMenu: {
+      id: '',
+      name: '',
+      itemList: [],
+    },
     updateMenuItem: item => this.updateMenuItem(item),
     addMenuItem: () => this.addMenuItem(),
     deleteMenuItem: () => this.deleteMenuItem(),
@@ -39,15 +45,17 @@ class Main extends React.Component {
   }
 
   componentDidMount() {
-    this.setCurrentMenuId();
     api.getAllMenus()
-      .then(menuList => this.setState({ menuList }));
-  }
-
-  setCurrentMenuId = () => {
-    const urlArray = window.location.href.split('/');
-    const menuId = urlArray.pop();
-    this.setState({ currentMenuId: menuId });
+      .then((menuList) => {
+        const urlArray = window.location.href.split('/');
+        const currentMenuId = urlArray.pop();
+        const currentMenu = menuList.find(menu => menu.id === currentMenuId);
+        this.setState({
+          menuList,
+          currentMenuId,
+          currentMenu,
+        })
+      });
   }
 
   addMenuItem = () => {
@@ -102,7 +110,7 @@ class Main extends React.Component {
             <div className="main-page__detail">
               <Router>
                 <HomePage path="/" />
-                <Menu path="/app/:menuId" />
+                <MenuContainer path="/app/:menuId" />
               </Router>
             </div>
           </div>
