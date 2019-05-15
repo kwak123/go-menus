@@ -52,6 +52,7 @@ body {
 .menu-item {
 	list-style: none;
 	display: flex;
+	align-items: center;
 }
 
 .menu-item__name-field {
@@ -79,4 +80,10 @@ body {
 
 .menu-item__provider-field input {
 	height: 24px;
+	margin-right: 16px;
+}
+
+.menu-item__delete-button {
+	height: 24px;
+	margin-left: 16px;
 }

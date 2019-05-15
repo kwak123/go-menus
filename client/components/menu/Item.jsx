@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 
 import MenuContext from '../../contexts/menu';
 
+import { Button } from '@material-ui/core';
+
 const Item = (props) => {
   const { item } = props;
 
@@ -35,6 +37,11 @@ const Item = (props) => {
               onChange={e => setItemProvider(e.target.value)}
             />
           </div>
+          <Button
+            onClick={() => deleteMenuItem(item.id)}
+          >
+            Delete
+          </Button>
         </li>
       )}
     </MenuContext.Consumer>

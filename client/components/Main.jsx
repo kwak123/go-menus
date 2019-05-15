@@ -26,7 +26,7 @@ class Main extends React.Component {
     },
     updateMenuItem: item => this.updateMenuItem(item),
     addMenuItem: () => this.addMenuItem(),
-    deleteMenuItem: () => this.deleteMenuItem(),
+    deleteMenuItem: (itemId) => this.deleteMenuItem(itemId),
   }
 
   updateMenuItem = (item) => {
