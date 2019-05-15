@@ -1,14 +1,50 @@
-import React from 'react';
+import React, { useState } from 'react';
+
+import MenuContext from '../../contexts/menu';
+
+import { Button } from '@material-ui/core';
 
 const Item = (props) => {
   const { item } = props;
-  const { name, provider } = item;
+
+  const [itemName, setItemName] = useState(item.name);
+  const [itemProvider, setItemProvider] = useState(item.provider)
 
   return (
-    <li>
-      <h3>Item: {name}</h3>
-      <p>Provider: {provider}</p>
-    </li>
+    <MenuContext.Consumer>
+      {({ updateMenuItem, deleteMenuItem }) => (
+        <li
+          className="menu-item"
+          onBlur={() => updateMenuItem({
+            id: item.id,
+            name: itemName,
+            provider: itemProvider,
+          })}
+        >
+          <div className="menu-item__name-field">
+            <p>Item: </p>
+            <input
+              type="text"
+              value={itemName}
+              onChange={e => setItemName(e.target.value)}
+            />
+          </div>
+          <div className="menu-item__provider-field">
+            <p>Provider: </p>
+            <input
+              type="text"
+              value={itemProvider}
+              onChange={e => setItemProvider(e.target.value)}
+            />
+          </div>
+          <Button
+            onClick={() => deleteMenuItem(item.id)}
+          >
+            Delete
+          </Button>
+        </li>
+      )}
+    </MenuContext.Consumer>
   );
 };
 

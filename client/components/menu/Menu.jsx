@@ -1,34 +1,22 @@
 import React from 'react';
 
-import api from '../../api/api';
+import { Button } from '@material-ui/core';
 
 import Item from './Item';
 
-class Menu extends React.Component {
-  state = {
-    name: '',
-    itemList: [],
-  }
+const Menu = (props) => {
+  const { currentMenu, addMenuItem } = props;
+  const { name, itemList } = currentMenu;
 
-  componentDidMount() {
-    const { menuId } = this.props;
-    api.getMenu(menuId)
-      .then(menu => this.setState({
-        name: menu.name,
-        itemList: menu.itemList,
-      }));
-  }
-
-  render() {
-    return (
-      <div>
-        <h2>{this.state.name || "Menu"}</h2>
-        <ul>
-          {this.state.itemList.map(item => <Item item={item} key={item.id}></Item>)}
-        </ul>
-      </div>
-    );
-  }
+  return (
+    <div className="menu__container">
+      <h2>{name}</h2>
+      <ul>
+        {itemList.map(item => <Item item={item} key={item.id}></Item>)}
+      </ul>
+      <Button variant="contained" onClick={addMenuItem}>Add Item</Button>
+    </div>
+  );
 };
 
 export default Menu;

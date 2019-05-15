@@ -40,11 +40,50 @@ body {
 }
 
 .menu-list__header {
-	margin: 24px 0 24px 16px;
+	margin: 16px 0 8px 16px;
 }
 
 .main-page__detail {
 	display: flex;
 	padding: 16px;
 	width: 100%;
+}
+
+.menu-item {
+	list-style: none;
+	display: flex;
+	align-items: center;
+}
+
+.menu-item__name-field {
+	display: flex;
+	align-items: center;
+	margin-right: 32px;
+}
+
+.menu-item__name-field p {
+	margin-right: 16px;
+}
+
+.menu-item__name-field input {
+	height: 24px;
+}
+
+.menu-item__provider-field {
+	display: flex;
+	align-items: center;
+}
+
+.menu-item__provider-field p {
+	margin-right: 16px;
+}
+
+.menu-item__provider-field input {
+	height: 24px;
+	margin-right: 16px;
+}
+
+.menu-item__delete-button {
+	height: 24px;
+	margin-left: 16px;
 }
