@@ -29,6 +29,11 @@ class Main extends React.Component {
     deleteMenuItem: (itemId) => this.deleteMenuItem(itemId),
   }
 
+  componentDidMount() {
+    api.getAllMenus()
+      .then((menuList) => this.refreshMenuData(menuList));
+  }
+
   updateMenuItem = (item) => {
     const { currentMenuId } = this.state;
     return api.updateMenuItem(currentMenuId, item)
@@ -44,11 +49,6 @@ class Main extends React.Component {
       });
   }
 
-  componentDidMount() {
-    api.getAllMenus()
-      .then((menuList) => this.refreshMenuData(menuList));
-  }
-
   refreshMenuData = (menuList) => {
     const urlArray = window.location.href.split('/');
     const currentMenuId = urlArray.pop();
@@ -61,7 +61,7 @@ class Main extends React.Component {
   }
 
   addMenuItem = () => {
-    return api.addMenuItem()
+    return api.addMenuItem(this.state.currentMenuId)
       .then((updatedMenu) => {
         // Ghettoooooo
         const newMenuList = this.state.menuList.map((menu) => {
@@ -74,8 +74,8 @@ class Main extends React.Component {
       });
   }
 
-  deleteMenuItem = (itemId) => {
-    return api.deleteMenuItem(itemId)
+  deleteMenuItem = (item) => {
+    return api.deleteMenuItem(this.state.currentMenuId, item)
       .then((updatedMenu) => {
         // Ghettoooooo
         const newMenuList = this.state.menuList.map((menu) => {

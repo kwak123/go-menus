@@ -43,7 +43,7 @@ func InitializeDb() {
 }
 
 func refreshDb() {
-	menu := Menu{ID: "stub", Name: "Test", ItemList: []Item{}}
+	menu := Menu{ID: "stub", Name: "Test", Location: "somewhere", ItemList: []Item{}}
 	err := Database.Collection(menuCollectionName).Drop(context.TODO())
 	if err != nil {
 		println("Failed to refresh db: %s", err)
@@ -53,7 +53,7 @@ func refreshDb() {
 	Database.Collection(menuCollectionName).InsertOne(context.TODO(), menu)
 }
 
-// Fetches all available menus
+// GetAllMenus fetches all available menus
 func GetAllMenus() []*Menu {
 	findOptions := options.Find()
 	var menuList []*Menu
@@ -63,6 +63,7 @@ func GetAllMenus() []*Menu {
 	if err != nil {
 		println("Failed to get menus")
 	}
+	defer cursor.Close(context.TODO())
 
 	for cursor.Next(context.TODO()) {
 		var m Menu
@@ -74,18 +75,27 @@ func GetAllMenus() []*Menu {
 		menuList = append(menuList, &m)
 	}
 
-	cursor.Close(context.TODO())
 	return menuList
+}
+
+// Wrapper for adding menu to db
+func AddMenu(m Menu) {
+	_, err := Database.Collection(menuCollectionName).InsertOne(context.TODO(), m)
+	if err != nil {
+		println("Failed to add menu")
+	}
 }
 
 // GetMenu finds desired menu by menuID
 func GetMenu(menuID string) Menu {
+	print(menuID)
 	menu := Menu{}
 	filter := bson.D{{"id", menuID}}
 	err := Database.Collection(menuCollectionName).FindOne(context.TODO(), filter).Decode(&menu)
 
 	if err != nil {
 		println("Failed to find menu")
+		println(err.Error())
 	}
 	return menu
 }

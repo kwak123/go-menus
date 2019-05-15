@@ -12,6 +12,7 @@ type Item struct {
 type Menu struct {
 	ID       string `json:"id"`
 	Name     string `json:"name"`
+	Location string `json:"location"`
 	ItemList []Item `json:"itemList"`
 }
 
