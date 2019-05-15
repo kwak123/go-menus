@@ -46,16 +46,18 @@ class Main extends React.Component {
 
   componentDidMount() {
     api.getAllMenus()
-      .then((menuList) => {
-        const urlArray = window.location.href.split('/');
-        const currentMenuId = urlArray.pop();
-        const currentMenu = menuList.find(menu => menu.id === currentMenuId);
-        this.setState({
-          menuList,
-          currentMenuId,
-          currentMenu,
-        })
-      });
+      .then((menuList) => this.refreshMenuData(menuList));
+  }
+
+  refreshMenuData = (menuList) => {
+    const urlArray = window.location.href.split('/');
+    const currentMenuId = urlArray.pop();
+    const currentMenu = menuList.find(menu => menu.id === currentMenuId);
+    this.setState({
+      menuList,
+      currentMenuId,
+      currentMenu,
+    });
   }
 
   addMenuItem = () => {
@@ -68,7 +70,7 @@ class Main extends React.Component {
           }
           return { ...menu };
         });
-        this.setState({ menuList: newMenuList })
+        this.refreshMenuData(newMenuList);
       });
   }
 
@@ -82,7 +84,7 @@ class Main extends React.Component {
           }
           return { ...menu };
         });
-        this.setState({ menuList: newMenuList })
+        this.refreshMenuData(newMenuList);
       });
   }
 
