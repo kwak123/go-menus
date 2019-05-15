@@ -20,6 +20,7 @@ class Main extends React.Component {
     currentMenuId: '',
     updateMenuItem: item => this.updateMenuItem(item),
     addMenuItem: () => this.addMenuItem(),
+    deleteMenuItem: () => this.deleteMenuItem(),
   }
 
   updateMenuItem = (item) => {
@@ -51,6 +52,20 @@ class Main extends React.Component {
 
   addMenuItem = () => {
     return api.addMenuItem()
+      .then((updatedMenu) => {
+        // Ghettoooooo
+        const newMenuList = this.state.menuList.map((menu) => {
+          if (menu.id === updatedMenu.id) {
+            return updatedMenu;
+          }
+          return { ...menu };
+        });
+        this.setState({ menuList: newMenuList })
+      });
+  }
+
+  deleteMenuItem = (itemId) => {
+    return api.deleteMenuItem(itemId)
       .then((updatedMenu) => {
         // Ghettoooooo
         const newMenuList = this.state.menuList.map((menu) => {

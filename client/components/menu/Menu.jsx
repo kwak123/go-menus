@@ -22,29 +22,29 @@ class Menu extends React.Component {
       }));
   }
 
-  // TODO: This refetch can be solved
-  componentDidUpdate() {
-    const { menuId } = this.props;
-    api.getMenu(menuId)
-      .then(menu => this.setState({
-        name: menu.name,
-        itemList: menu.itemList,
-      }));
-  }
+  // TODO: This refetch can be solved UH OH THIS WONT STOP
+  // componentDidUpdate() {
+  //   const { menuId } = this.props;
+  //   api.getMenu(menuId)
+  //     .then(menu => this.setState({
+  //       name: menu.name,
+  //       itemList: menu.itemList,
+  //     }));
+  // }
 
   render() {
     return (
-        <div className="menu__container">
-          <h2>{this.state.name}</h2>
-          <ul>
-            {this.state.itemList.map(item => <Item item={item} key={item.id}></Item>)}
-          </ul>
-          <MenuContext.Consumer>
-            {({ addMenuItem }) => (
-              <Button variant="contained" onClick={addMenuItem}>Add Item</Button>
-            )}
-          </MenuContext.Consumer>
-        </div>
+      <div className="menu__container">
+        <h2>{this.state.name}</h2>
+        <ul>
+          {this.state.itemList.map(item => <Item item={item} key={item.id}></Item>)}
+        </ul>
+        <MenuContext.Consumer>
+          {({ addMenuItem }) => (
+            <Button variant="contained" onClick={addMenuItem}>Add Item</Button>
+          )}
+        </MenuContext.Consumer>
+      </div>
     );
   }
 };

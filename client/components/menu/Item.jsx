@@ -10,7 +10,7 @@ const Item = (props) => {
 
   return (
     <MenuContext.Consumer>
-      {({ updateMenuItem }) => (
+      {({ updateMenuItem, deleteMenuItem }) => (
         <li
           className="menu-item"
           onBlur={() => updateMenuItem({
