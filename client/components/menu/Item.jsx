@@ -38,7 +38,7 @@ const Item = (props) => {
             />
           </div>
           <Button
-            onClick={() => deleteMenuItem(item.id)}
+            onClick={() => deleteMenuItem(item)}
           >
             Delete
           </Button>

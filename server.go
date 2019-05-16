@@ -14,6 +14,15 @@ import (
 	"github.com/google/uuid"
 )
 
+type addBody struct {
+	MenuID string `json:"menuId"`
+}
+
+type modifierBody struct {
+	MenuID string  `json:"menuId"`
+	Item   db.Item `json:"item"`
+}
+
 // This closure is probably unnecessary once converting to db
 func makeRouteHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -99,47 +108,48 @@ func parseBodyForJSON(w http.ResponseWriter, r *http.Request, v interface{}) err
 
 // TODO: Expand to add an item
 func handleAddItemToMenu(w http.ResponseWriter, r *http.Request) {
+	addBody := &addBody{}
+
+	// Create uuid for the new item
 	newID := uuid.New()
-	// TODO: Remove this mock id handler
 	stringifiedID := newID.String()
-	// Initialize item
 	item := db.Item{ID: stringifiedID}
 
-	err := parseBodyForJSON(w, r, &item)
+	err := parseBodyForJSON(w, r, &addBody)
 
 	if err != nil {
 		fmt.Fprint(w, "Failed to parse")
 	}
 
-	db.AddItemToMenu("stub", item)
-	handleGetMenu(w, r, "stub")
-}
-
-// Only name, one thing at a time for now haha
-func handleUpdateItem(w http.ResponseWriter, r *http.Request) {
-	updateItem := db.Item{}
-
-	err := parseBodyForJSON(w, r, &updateItem)
-
-	if err != nil {
-		fmt.Fprintf(w, "Failed to update item")
-	}
-
-	db.UpdateItemInMenu("stub", updateItem)
-	handleGetMenu(w, r, "stub")
+	db.AddItemToMenu(addBody.MenuID, item)
+	handleGetMenu(w, r, addBody.MenuID)
 }
 
 func handleDeleteItem(w http.ResponseWriter, r *http.Request) {
-	deleteItem := db.Item{}
+	deleteBody := modifierBody{}
 
-	err := parseBodyForJSON(w, r, &deleteItem)
+	err := parseBodyForJSON(w, r, &deleteBody)
 
 	if err != nil {
 		fmt.Fprintf(w, "Failed to delete item")
 	}
 
-	db.DeleteItemFromMenu("stub", deleteItem.ID)
-	handleGetMenu(w, r, "stub")
+	db.DeleteItemFromMenu(deleteBody.MenuID, deleteBody.Item.ID)
+	handleGetMenu(w, r, deleteBody.MenuID)
+}
+
+// Only name, one thing at a time for now haha
+func handleUpdateItem(w http.ResponseWriter, r *http.Request) {
+	updateBody := modifierBody{}
+
+	err := parseBodyForJSON(w, r, &updateBody)
+
+	if err != nil {
+		fmt.Fprintf(w, "Failed to update item")
+	}
+
+	db.UpdateItemInMenu(updateBody.MenuID, updateBody.Item)
+	handleGetMenu(w, r, updateBody.MenuID)
 }
 
 func clientRouterHandler(w http.ResponseWriter, r *http.Request) {
